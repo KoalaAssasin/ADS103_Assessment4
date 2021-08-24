@@ -11,6 +11,10 @@ struct Move
 
 char player = 'x', opponent = 'o';
 
+bool aFilled = false, bFilled = false, cFilled = false;
+bool dFilled = false, eFilled = false, fFilled = false;
+bool gFilled = false, hFilled = false, iFilled = false;
+
 // This function returns true if there are moves
 // remaining on the board. It returns false if
 // there are no moves left to play.
@@ -156,7 +160,7 @@ int minimax(char board[3][3], int depth, bool isMax)
     }
 }
 
-// This will return the best possible move for the player
+// This will return the best possible move for the ai
 Move findBestMove(char board[3][3])
 {
     int bestVal = -1000;
@@ -206,17 +210,171 @@ Move findBestMove(char board[3][3])
 // Driver code
 int main()
 {
+    string choice;
+    bool validChoise;
+    bool someoneWon = false;
+
     char board[3][3] =
     {
-        { 'x', 'o', 'x' },
-        { 'o', 'o', 'x' },
+        { '_', '_', '_' },
+        { '_', '_', '_' },
         { '_', '_', '_' }
     };
 
+    cout << "You are o, your opponent is x" << endl;
+
+    do
+    {
+
+        //Prints the board --------------------------------------------
+        cout << endl;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (j == 0)
+                {
+                    cout << "   ";
+                }
+
+                cout << board[i][j] << " ";
+
+                if (j == 2)
+                {
+                    cout << endl;
+                }
+            }
+        }
+        cout << endl;
+        //Ends printing the board -------------------------------------
+
+        do
+        {
+            validChoise = true;
+            cout << "Where would you like to go? (Pick a letter a - i)" << endl << "   a  b  c" << endl << "   d  e  f" << endl << "   g  h  i" << endl;
+            cin >> choice;
+
+            //Checks if player's move is valid, updates board if it is, asks them to try again if it isn't
+            //Clunky, but effective
+            if (choice == "a" && aFilled == false)
+            {
+                board[0][0] = 'o';
+                aFilled = true;
+            }
+            else if (choice == "b" && bFilled == false)
+            {
+                board[0][1] = 'o';
+                bFilled = true;
+            }
+            else if (choice == "c" && cFilled == false)
+            {
+                board[0][2] = 'o';
+                cFilled = true;
+            }
+            else if (choice == "d" && dFilled == false)
+            {
+                board[1][0] = 'o';
+                dFilled = true;
+            }
+            else if (choice == "e" && eFilled == false)
+            {
+                board[1][1] = 'o';
+                eFilled = true;
+            }
+            else if (choice == "f" && fFilled == false)
+            {
+                board[1][2] = 'o';
+                fFilled = true;
+            }
+            else if (choice == "g" && gFilled == false)
+            {
+                board[2][0] = 'o';
+                gFilled = true;
+            }
+            else if (choice == "h" && hFilled == false)
+            {
+                board[2][1] = 'o';
+                hFilled = true;
+            }
+            else if (choice == "i" && iFilled == false)
+            {
+                board[2][2] = 'o';
+                iFilled = true;
+            }
+            else
+            {
+                cout << "Not a valid option! Try again" << endl;
+                validChoise = false;
+            }
+
+        } while (validChoise == false);
+
+
+        system("cls");
+
+        // Computer's turn -------------------------------------------------
+        Move bestMove = findBestMove(board);
+        board[bestMove.row][bestMove.col] = 'x';
+
+        if (bestMove.row == 0 && bestMove.col == 0)
+        {
+            aFilled = true;
+        }
+        else if (bestMove.row == 0 && bestMove.col == 1)
+        {
+            bFilled = true;
+        }
+        else if (bestMove.row == 0 && bestMove.col == 2)
+        {
+            cFilled = true;
+        }
+        else if (bestMove.row == 1 && bestMove.col == 0)
+        {
+            dFilled = true;
+        }
+        else if (bestMove.row == 1 && bestMove.col == 1)
+        {
+            eFilled = true;
+        }
+        else if (bestMove.row == 1 && bestMove.col == 2)
+        {
+            fFilled = true;
+        }
+        else if (bestMove.row == 2 && bestMove.col == 0)
+        {
+            gFilled = true;
+        }
+        else if (bestMove.row == 2 && bestMove.col == 1)
+        {
+            hFilled = true;
+        }
+        else if (bestMove.row == 2 && bestMove.col == 2)
+        {
+            iFilled = true;
+        }
+        // Computer's turn end ---------------------------------------------
+
+
+        //Checks if someone has won or if board is full
+        if (minimax(board, 0, false) == 10 || minimax(board, 0, false) == -10 || isMovesLeft(board) == false)
+        {
+            someoneWon = true;
+        }
+
+    } while (someoneWon == false);
+
+
+    //Prints the board --------------------------------------------
+    cout << endl;
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
+            if (j == 0)
+            {
+                cout << "   ";
+            }
+
             cout << board[i][j] << " ";
 
             if (j == 2)
@@ -225,13 +383,24 @@ int main()
             }
         }
     }
-
     cout << endl;
+    //Ends printing the board -------------------------------------
 
-    Move bestMove = findBestMove(board);
+    if (minimax(board, 0, false) == 10)
+    {
+        cout << "Computer wins!";
+    }
+    else if(minimax(board, 0, false) == -10)
+    {
+        cout << "Player wins!";
+    }
+    else
+    {
+        cout << "Nobody wins!";
+    }
 
-    printf("The Optimal Move is :\n");
-    printf("ROW: %d COL: %d\n\n", bestMove.row,
-        bestMove.col);
     return 0;
 }
+
+//printf("The Optimal Move is :\n");
+//printf("ROW: %d COL: %d\n\n", bestMove.row, bestMove.col);

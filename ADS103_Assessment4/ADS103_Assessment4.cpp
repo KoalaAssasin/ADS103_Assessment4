@@ -1,7 +1,7 @@
-
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 struct Move
@@ -207,8 +207,8 @@ Move findBestMove(char board[3][3])
     return bestMove;
 }
 
-// Driver code
-int main()
+// All the code for player vs player
+void Multiplayer()
 {
     bool playAgain;
     string again;
@@ -231,7 +231,7 @@ int main()
             { '_', '_', '_' }
         };
 
-        cout << "You are o, your opponent is x" << endl;
+        cout << "Player 1 is o, Player 2 is x" << endl;
 
         do
         {
@@ -260,8 +260,9 @@ int main()
 
             do
             {
+                // Player 1's turn
                 validChoise = true;
-                cout << "Where would you like to go? (Pick a letter a - i)" << endl << "   a  b  c" << endl << "   d  e  f" << endl << "   g  h  i" << endl;
+                cout << "Player 1, where would you like to go? (Pick a letter a - i)" << endl << "   a  b  c" << endl << "   d  e  f" << endl << "   g  h  i" << endl;
                 cin >> choice;
 
                 //Checks if player's move is valid, updates board if it is, asks them to try again if it isn't
@@ -319,50 +320,99 @@ int main()
 
             } while (validChoise == false);
 
+            //Checks if someone has won or if board is full
+            if (minimax(board, 0, false) == 10 || minimax(board, 0, false) == -10 || isMovesLeft(board) == false)
+            {
+                someoneWon = true;
+                break;
+            }
 
             system("cls");
 
-            // Computer's turn -------------------------------------------------
-            Move bestMove = findBestMove(board);
-            board[bestMove.row][bestMove.col] = 'x';
+            //Prints the board --------------------------------------------
+            cout << endl;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (j == 0)
+                    {
+                        cout << "   ";
+                    }
 
-            if (bestMove.row == 0 && bestMove.col == 0)
-            {
-                aFilled = true;
+                    cout << board[i][j] << " ";
+
+                    if (j == 2)
+                    {
+                        cout << endl;
+                    }
+                }
             }
-            else if (bestMove.row == 0 && bestMove.col == 1)
+            cout << endl;
+            //Ends printing the board -------------------------------------
+
+
+            //Player 2's turn
+            do
             {
-                bFilled = true;
-            }
-            else if (bestMove.row == 0 && bestMove.col == 2)
-            {
-                cFilled = true;
-            }
-            else if (bestMove.row == 1 && bestMove.col == 0)
-            {
-                dFilled = true;
-            }
-            else if (bestMove.row == 1 && bestMove.col == 1)
-            {
-                eFilled = true;
-            }
-            else if (bestMove.row == 1 && bestMove.col == 2)
-            {
-                fFilled = true;
-            }
-            else if (bestMove.row == 2 && bestMove.col == 0)
-            {
-                gFilled = true;
-            }
-            else if (bestMove.row == 2 && bestMove.col == 1)
-            {
-                hFilled = true;
-            }
-            else if (bestMove.row == 2 && bestMove.col == 2)
-            {
-                iFilled = true;
-            }
-            // Computer's turn end ---------------------------------------------
+                validChoise = true;
+                cout << "Player 2, where would you like to go? (Pick a letter a - i)" << endl << "   a  b  c" << endl << "   d  e  f" << endl << "   g  h  i" << endl;
+                cin >> choice;
+
+                //Checks if player's move is valid, updates board if it is, asks them to try again if it isn't
+                //Clunky, but effective
+                if (choice == "a" && aFilled == false)
+                {
+                    board[0][0] = 'x';
+                    aFilled = true;
+                }
+                else if (choice == "b" && bFilled == false)
+                {
+                    board[0][1] = 'x';
+                    bFilled = true;
+                }
+                else if (choice == "c" && cFilled == false)
+                {
+                    board[0][2] = 'x';
+                    cFilled = true;
+                }
+                else if (choice == "d" && dFilled == false)
+                {
+                    board[1][0] = 'x';
+                    dFilled = true;
+                }
+                else if (choice == "e" && eFilled == false)
+                {
+                    board[1][1] = 'x';
+                    eFilled = true;
+                }
+                else if (choice == "f" && fFilled == false)
+                {
+                    board[1][2] = 'x';
+                    fFilled = true;
+                }
+                else if (choice == "g" && gFilled == false)
+                {
+                    board[2][0] = 'x';
+                    gFilled = true;
+                }
+                else if (choice == "h" && hFilled == false)
+                {
+                    board[2][1] = 'x';
+                    hFilled = true;
+                }
+                else if (choice == "i" && iFilled == false)
+                {
+                    board[2][2] = 'x';
+                    iFilled = true;
+                }
+                else
+                {
+                    cout << "Not a valid option! Try again" << endl;
+                    validChoise = false;
+                }
+
+            } while (validChoise == false);
 
 
             //Checks if someone has won or if board is full
@@ -398,11 +448,11 @@ int main()
 
         if (minimax(board, 0, false) == 10)
         {
-            cout << "Computer wins!";
+            cout << "Player 2 wins!";
         }
         else if (minimax(board, 0, false) == -10)
         {
-            cout << "Player wins!";
+            cout << "Player 1 wins!";
         }
         else
         {
@@ -439,8 +489,278 @@ int main()
 
     } while (playAgain == true);
 
+}
+
+
+// Driver code
+// Mostly the player vs computer function
+int main()
+{
+    bool playAgain;
+    string again;
+    string oneOrTwoPlayers;
+    bool playerError = false;
+
+    do
+    {
+        cout << "What would you like to do? (enter 1 or 2)" << endl << "1: Player vs computer" << endl << "2: Player vs Player" << endl;
+        cin >> oneOrTwoPlayers;
+
+        if (oneOrTwoPlayers == "1")
+        {
+            playerError = false;
+        }
+        else if (oneOrTwoPlayers == "2")
+        {
+            playerError = false;
+        }
+        else
+        {
+            playerError = true;
+        }
+
+    } while (playerError == true);
+
+    // All the code for player vs computer
+    if (oneOrTwoPlayers == "1")
+    {
+
+        do
+        {
+            string choice;
+            bool validChoise;
+            bool someoneWon = false;
+
+            // Resets all spots to not be filled, for if choosing to play again
+            aFilled = false, bFilled = false, cFilled = false;
+            dFilled = false, eFilled = false, fFilled = false;
+            gFilled = false, hFilled = false, iFilled = false;
+
+            char board[3][3] =
+            {
+                { '_', '_', '_' },
+                { '_', '_', '_' },
+                { '_', '_', '_' }
+            };
+
+            cout << "You are o, your opponent is x" << endl;
+
+            do
+            {
+
+                //Prints the board --------------------------------------------
+                cout << endl;
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (j == 0)
+                        {
+                            cout << "   ";
+                        }
+
+                        cout << board[i][j] << " ";
+
+                        if (j == 2)
+                        {
+                            cout << endl;
+                        }
+                    }
+                }
+                cout << endl;
+                //Ends printing the board -------------------------------------
+
+                do
+                {
+                    validChoise = true;
+                    cout << "Where would you like to go? (Pick a letter a - i)" << endl << "   a  b  c" << endl << "   d  e  f" << endl << "   g  h  i" << endl;
+                    cin >> choice;
+
+                    //Checks if player's move is valid, updates board if it is, asks them to try again if it isn't
+                    //Clunky, but effective
+                    if (choice == "a" && aFilled == false)
+                    {
+                        board[0][0] = 'o';
+                        aFilled = true;
+                    }
+                    else if (choice == "b" && bFilled == false)
+                    {
+                        board[0][1] = 'o';
+                        bFilled = true;
+                    }
+                    else if (choice == "c" && cFilled == false)
+                    {
+                        board[0][2] = 'o';
+                        cFilled = true;
+                    }
+                    else if (choice == "d" && dFilled == false)
+                    {
+                        board[1][0] = 'o';
+                        dFilled = true;
+                    }
+                    else if (choice == "e" && eFilled == false)
+                    {
+                        board[1][1] = 'o';
+                        eFilled = true;
+                    }
+                    else if (choice == "f" && fFilled == false)
+                    {
+                        board[1][2] = 'o';
+                        fFilled = true;
+                    }
+                    else if (choice == "g" && gFilled == false)
+                    {
+                        board[2][0] = 'o';
+                        gFilled = true;
+                    }
+                    else if (choice == "h" && hFilled == false)
+                    {
+                        board[2][1] = 'o';
+                        hFilled = true;
+                    }
+                    else if (choice == "i" && iFilled == false)
+                    {
+                        board[2][2] = 'o';
+                        iFilled = true;
+                    }
+                    else
+                    {
+                        cout << "Not a valid option! Try again" << endl;
+                        validChoise = false;
+                    }
+
+                } while (validChoise == false);
+
+
+                system("cls");
+
+                // Computer's turn -------------------------------------------------
+                Move bestMove = findBestMove(board);
+                board[bestMove.row][bestMove.col] = 'x';
+
+                if (bestMove.row == 0 && bestMove.col == 0)
+                {
+                    aFilled = true;
+                }
+                else if (bestMove.row == 0 && bestMove.col == 1)
+                {
+                    bFilled = true;
+                }
+                else if (bestMove.row == 0 && bestMove.col == 2)
+                {
+                    cFilled = true;
+                }
+                else if (bestMove.row == 1 && bestMove.col == 0)
+                {
+                    dFilled = true;
+                }
+                else if (bestMove.row == 1 && bestMove.col == 1)
+                {
+                    eFilled = true;
+                }
+                else if (bestMove.row == 1 && bestMove.col == 2)
+                {
+                    fFilled = true;
+                }
+                else if (bestMove.row == 2 && bestMove.col == 0)
+                {
+                    gFilled = true;
+                }
+                else if (bestMove.row == 2 && bestMove.col == 1)
+                {
+                    hFilled = true;
+                }
+                else if (bestMove.row == 2 && bestMove.col == 2)
+                {
+                    iFilled = true;
+                }
+                // Computer's turn end ---------------------------------------------
+
+
+                //Checks if someone has won or if board is full
+                if (minimax(board, 0, false) == 10 || minimax(board, 0, false) == -10 || isMovesLeft(board) == false)
+                {
+                    someoneWon = true;
+                }
+
+            } while (someoneWon == false);
+
+
+            //Prints the board --------------------------------------------
+            cout << endl;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (j == 0)
+                    {
+                        cout << "   ";
+                    }
+
+                    cout << board[i][j] << " ";
+
+                    if (j == 2)
+                    {
+                        cout << endl;
+                    }
+                }
+            }
+            cout << endl;
+            //Ends printing the board -------------------------------------
+
+            if (minimax(board, 0, false) == 10)
+            {
+                cout << "Computer wins!";
+            }
+            else if (minimax(board, 0, false) == -10)
+            {
+                cout << "Player wins!";
+            }
+            else
+            {
+                cout << "Nobody wins!";
+            }
+
+            bool againError;
+
+            do
+            {
+
+                cout << endl << "Play Again? (y for y, n for no)" << endl;
+                cin >> again;
+
+                againError = false;
+
+                if (again == "y")
+                {
+                    playAgain = true;
+                }
+                else if (again == "n")
+                {
+                    playAgain = false;
+                }
+                else
+                {
+                    cout << "Not a valid option bud, try again" << endl;
+                    againError = true;
+                }
+            } while (againError == true);
+
+            system("cls");
+
+
+        } while (playAgain == true);
+
+    }
+    else
+    {
+         Multiplayer();
+    }
+
     return 0;
 }
 
-//printf("The Optimal Move is :\n");
-//printf("ROW: %d COL: %d\n\n", bestMove.row, bestMove.col);
+// This is a program for playing tic-tac-toe againt a computer, or another player
+// By Micah Cop and Michail Hatzialexiou
+
+//Minmax algorithm referenced from https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/

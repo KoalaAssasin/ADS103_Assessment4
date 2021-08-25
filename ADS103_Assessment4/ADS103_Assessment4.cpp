@@ -201,8 +201,8 @@ Move findBestMove(char board[3][3])
         }
     }
 
-    printf("The value of the best Move is : %d\n\n",
-        bestVal);
+    //printf("The value of the best Move is : %d\n\n",
+    //    bestVal);
 
     return bestMove;
 }
@@ -210,6 +210,7 @@ Move findBestMove(char board[3][3])
 // All the code for player vs player
 void Multiplayer()
 {
+    system("cls");
     bool playAgain;
     string again;
 
@@ -321,9 +322,10 @@ void Multiplayer()
             } while (validChoise == false);
 
             //Checks if someone has won or if board is full
-            if (minimax(board, 0, false) == 10 || minimax(board, 0, false) == -10 || isMovesLeft(board) == false)
+            if (evaluate(board) == -10 || evaluate(board) == 10 || isMovesLeft(board) == false)
             {
                 someoneWon = true;
+                system("cls");
                 break;
             }
 
@@ -414,9 +416,10 @@ void Multiplayer()
 
             } while (validChoise == false);
 
+            system("cls");
 
             //Checks if someone has won or if board is full
-            if (minimax(board, 0, false) == 10 || minimax(board, 0, false) == -10 || isMovesLeft(board) == false)
+            if (evaluate(board) == -10 || evaluate(board) == 10 || isMovesLeft(board) == false)
             {
                 someoneWon = true;
             }
@@ -446,11 +449,11 @@ void Multiplayer()
         cout << endl;
         //Ends printing the board -------------------------------------
 
-        if (minimax(board, 0, false) == 10)
+        if (evaluate(board) == 10)
         {
             cout << "Player 2 wins!";
         }
-        else if (minimax(board, 0, false) == -10)
+        else if (evaluate(board) == -10)
         {
             cout << "Player 1 wins!";
         }
